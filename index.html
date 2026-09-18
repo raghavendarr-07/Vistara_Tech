@@ -1,0 +1,1275 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A live closed-world model of all 32 sustainable supply chain network configurations for VistaraTech, built entirely from the assignment brief.">
+<style>html{color-scheme:light dark}body{margin:0;font:14px/1.5 system-ui,sans-serif;background:#eef2f2}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>VistaraTech Network Designer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  color-scheme: light;
+  --surface:#fbfcfc; --plane:#eef2f2; --panel:#ffffff; --deep:#0E3B43;
+  --ink:#10201f; --ink2:#4b5654; --muted:#78827f;
+  --grid:#dde5e4; --axis:#bcc7c5; --rule:rgba(16,32,31,.11);
+  --s1:#0F8F84; --s2:#D97A1F; --neutral:#9aa6a4;
+  --warn:#A8564A; --good:#0F8F84;
+  --q1:#8fcfc8; --q2:#5cb8ae; --q3:#2ca094; --q4:#16786f; --q5:#0e5049;
+  --shadow:0 1px 2px rgba(14,59,67,.05),0 8px 24px rgba(14,59,67,.06);
+  --r:11px; --rs:7px;
+  --serif:"Source Serif 4",Cambria,Georgia,serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  color-scheme: dark;
+  --surface:#141a1c; --plane:#0a0e0f; --panel:#1a2124; --deep:#0b2c33;
+  --ink:#eef4f3; --ink2:#b3c0bd; --muted:#7f8b89;
+  --grid:#26302f; --axis:#39443f; --rule:rgba(238,244,243,.11);
+  --s1:#1AA294; --s2:#C97F22; --neutral:#7c8886;
+  --warn:#C2705F; --good:#1AA294;
+  --q1:#0e4a44; --q2:#14655d; --q3:#1a8378; --q4:#35a89b; --q5:#7bcbc2;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 8px 24px rgba(0,0,0,.4);
+}}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --surface:#141a1c; --plane:#0a0e0f; --panel:#1a2124; --deep:#0b2c33;
+  --ink:#eef4f3; --ink2:#b3c0bd; --muted:#7f8b89;
+  --grid:#26302f; --axis:#39443f; --rule:rgba(238,244,243,.11);
+  --s1:#1AA294; --s2:#C97F22; --neutral:#7c8886;
+  --warn:#C2705F; --good:#1AA294;
+  --q1:#0e4a44; --q2:#14655d; --q3:#1a8378; --q4:#35a89b; --q5:#7bcbc2;
+  --shadow:0 1px 2px rgba(0,0,0,.45),0 8px 24px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--plane);color:var(--ink);
+  font:14px/1.55 var(--sans);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1320px;margin:0 auto;padding-left:16px;padding-right:16px}
+header{background:var(--surface);border-bottom:1px solid var(--rule);position:sticky;top:0;z-index:60}
+.hd{display:flex;align-items:flex-start;gap:16px;padding-block:14px 8px;flex-wrap:wrap}
+.hd h1{margin:0;font:600 19px/1.2 var(--serif);letter-spacing:-.01em}
+.hd .sub{margin:3px 0 0;font-size:12px;color:var(--ink2);max-width:76ch}
+.hd .spacer{flex:1 1 auto}
+.tbtn{background:transparent;border:1px solid var(--rule);color:var(--ink2);border-radius:99px;
+  padding:6px 13px;font:inherit;font-size:12px;cursor:pointer}
+.tbtn:hover{background:var(--plane)}
+nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{background:none;border:0;border-bottom:2px solid transparent;color:var(--ink2);
+  padding:9px 14px;font:inherit;font-size:12.5px;font-weight:500;cursor:pointer;
+  white-space:nowrap;border-radius:6px 6px 0 0}
+nav button:hover{color:var(--ink);background:var(--plane)}
+nav button[aria-selected="true"]{color:var(--s1);border-bottom-color:var(--s1);font-weight:600}
+main{padding-block:18px 52px}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);
+  padding:16px;box-shadow:var(--shadow);margin-bottom:14px}
+.card h2{margin:0 0 3px;font:600 15px/1.25 var(--serif);letter-spacing:-.005em;text-wrap:balance}
+.card .cs{margin:0 0 13px;font-size:11.5px;color:var(--muted);max-width:80ch;line-height:1.5}
+.grid{display:grid;gap:14px}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+.split{display:grid;grid-template-columns:296px 1fr;gap:14px;align-items:start}
+.grid>*,.split>*,.card,.tile,main section{min-width:0}
+@media (max-width:940px){.split,.g2,.g3,.g4{grid-template-columns:1fr}}
+@media (max-width:640px){.wrap{padding-left:12px;padding-right:12px}.card{padding:13px}
+  .tile .val{font-size:23px}}
+.tile{background:var(--surface);border:1px solid var(--rule);border-radius:var(--r);padding:13px 15px}
+.tile .lab{font-size:10px;text-transform:uppercase;letter-spacing:.11em;color:var(--muted);font-weight:600}
+.tile .val{font:600 28px/1.05 var(--mono);letter-spacing:-.035em;margin:6px 0 2px}
+.tile .sub{font-size:11.5px;color:var(--ink2)}
+.tile .cmp{font-size:11px;color:var(--muted);margin-top:6px;padding-top:6px;border-top:1px solid var(--rule)}
+.pill{display:inline-flex;align-items:center;gap:4px;font:600 10.5px var(--mono);
+  padding:1.5px 7px;border-radius:99px;border:1px solid;vertical-align:middle}
+.pill.up{color:var(--good);border-color:color-mix(in srgb,var(--good) 40%,transparent);
+  background:color-mix(in srgb,var(--good) 10%,transparent)}
+.pill.dn{color:var(--warn);border-color:color-mix(in srgb,var(--warn) 40%,transparent);
+  background:color-mix(in srgb,var(--warn) 10%,transparent)}
+.pill.nu{color:var(--ink2);border-color:var(--rule);background:var(--plane)}
+.lev{border:1px solid var(--rule);border-radius:var(--rs);padding:9px 10px;margin-bottom:8px;background:var(--panel)}
+.lev .ln{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  font-weight:600;margin-bottom:6px;display:flex;justify-content:space-between;gap:6px;align-items:baseline}
+.lev .worth{font:500 10px var(--mono);color:var(--muted);text-transform:none;letter-spacing:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;background:var(--plane);border-radius:var(--rs);padding:3px}
+.seg button{border:0;background:transparent;color:var(--ink2);border-radius:5px;padding:6px 4px;
+  font:inherit;font-size:11.5px;font-weight:500;cursor:pointer;line-height:1.25}
+.seg button em{display:block;font:600 9px var(--mono);font-style:normal;opacity:.55;letter-spacing:.04em}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);font-weight:600;
+  box-shadow:0 1px 2px rgba(0,0,0,.13)}
+.seg button[aria-pressed="true"].b{color:var(--s1)}
+.asym{display:flex;align-items:flex-start;gap:9px;padding:8px 10px;border:1px solid var(--rule);
+  border-radius:var(--rs);margin-bottom:6px;cursor:pointer;background:var(--panel)}
+.asym:hover{background:var(--plane)}
+.asym input{margin:2px 0 0;accent-color:var(--s1);flex:0 0 auto}
+.asym>span{display:block;min-width:0}
+.asym .at{display:block;font-size:11.5px;font-weight:600;line-height:1.3}
+.asym .ad{display:block;font-size:10.5px;color:var(--muted);line-height:1.38;margin-top:2px}
+.asym.off{opacity:.45}
+.presets{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:11px}
+.presets button{border:1px solid var(--rule);background:var(--surface);color:var(--ink2);
+  border-radius:99px;padding:5px 11px;font:inherit;font-size:11px;font-weight:500;cursor:pointer}
+.presets button:hover{border-color:var(--s1);color:var(--s1)}
+.presets button.on{background:var(--s1);border-color:var(--s1);color:#fff}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:11.5px;min-width:440px}
+th{text-align:left;font-weight:600;color:var(--ink2);padding:6px 9px;border-bottom:1.5px solid var(--axis);
+  white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.09em}
+td{padding:6px 9px;border-bottom:1px solid var(--grid);vertical-align:top}
+td.n,th.n{text-align:right;white-space:nowrap;font-family:var(--mono);font-size:11px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+tr.hl td{background:color-mix(in srgb,var(--s1) 8%,transparent);font-weight:600}
+tr.tot td{border-top:1.5px solid var(--axis);font-weight:700;border-bottom:0}
+.dot{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+svg{display:block;max-width:100%;height:auto;overflow:visible}
+.gl{stroke:var(--grid);stroke-width:1}
+.ax{stroke:var(--axis);stroke-width:1}
+.tk{fill:var(--muted);font-size:10px;font-family:var(--mono);font-variant-numeric:tabular-nums}
+.lb{fill:var(--ink2);font-size:10.5px}
+.lbb{fill:var(--ink);font-size:11px;font-weight:600}
+.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:11px;color:var(--ink2);margin:9px 0 2px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.note{font-size:11px;color:var(--muted);line-height:1.55;margin-top:11px;padding-top:9px;
+  border-top:1px solid var(--rule)}
+.note b{color:var(--ink2)}
+.tip{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--rule);
+  border-radius:var(--rs);padding:7px 10px;font-size:11px;box-shadow:var(--shadow);z-index:100;
+  opacity:0;transition:opacity .1s;max-width:270px;line-height:1.45}
+.tip.on{opacity:1}
+.tip b{display:block;margin-bottom:2px;font-size:11.5px}
+.hit{cursor:pointer}.hit:hover{filter:brightness(1.1)}
+.kf{font-size:11.5px;color:var(--ink2);line-height:1.6}
+.kf b{color:var(--ink)}
+.kf p{margin:0 0 9px}
+.big{font:600 40px/1 var(--mono);letter-spacing:-.04em;color:var(--s1)}
+.chip{display:inline-block;font:600 10px var(--mono);padding:2px 6px;border-radius:4px;
+  background:var(--plane);color:var(--ink2);border:1px solid var(--rule);white-space:nowrap}
+.chip.a{background:color-mix(in srgb,var(--neutral) 16%,transparent);color:var(--ink2)}
+.chip.b{background:color-mix(in srgb,var(--s1) 14%,transparent);color:var(--s1);
+  border-color:color-mix(in srgb,var(--s1) 34%,transparent)}
+.prov{display:inline-block;font:600 9px var(--mono);padding:1px 5px;border-radius:3px;
+  letter-spacing:.04em;white-space:nowrap}
+.prov.pdf{background:color-mix(in srgb,var(--s1) 15%,transparent);color:var(--s1)}
+.prov.ind{background:color-mix(in srgb,var(--s2) 17%,transparent);color:var(--s2)}
+.prov.str{background:var(--plane);color:var(--muted)}
+:where(button,input,a,[tabindex]):focus-visible{outline:2px solid var(--s1);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+[hidden]{display:none!important}
+footer{border-top:1px solid var(--rule);margin-top:8px;padding-block:16px 30px;
+  font-size:11px;color:var(--muted);line-height:1.6}
+</style>
+
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="hd">
+      <div>
+        <h1>VistaraTech Network Designer &nbsp;<span class="chip">Closed-world model</span></h1>
+        <p class="sub">The assignment brief sets five binary decisions. That is not three networks
+          &mdash; it is <b>32</b>. All 32 are scored here on one engine built entirely from the
+          brief's own structure. Nothing below uses a price, a company financial or an external
+          dataset: every result is an <b>index with Network A = 100</b>.</p>
+      </div>
+      <div class="spacer"></div>
+      <button class="tbtn" id="themeBtn" type="button">Theme</button>
+    </div>
+    <nav role="tablist" id="nav"></nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <!-- ============ DESIGNER ============ -->
+  <section id="p-designer" role="tabpanel">
+    <div class="grid g4" id="kpis"></div>
+    <div class="split" style="margin-top:14px">
+      <div>
+        <div class="card" style="margin-bottom:14px">
+          <h2>The five decisions</h2>
+          <p class="cs">Start from a named network, or build your own.</p>
+          <div class="presets" id="presets"></div>
+          <div id="levers"></div>
+        </div>
+        <div class="card">
+          <h2>The six asymmetries</h2>
+          <p class="cs">Each becomes available only when its underlying Option B is selected. This
+            is the difference between <i>choosing</i> Option B and <i>engineering</i> it.</p>
+          <div id="asyms"></div>
+          <div class="note" id="asymNote"></div>
+        </div>
+      </div>
+      <div>
+        <div class="card">
+          <h2>The decision space &mdash; all 32 configurations</h2>
+          <p class="cs">Every configuration of the five binary decisions, scored on the same engine.
+            Left and down is better. Bubble size is value recovery &mdash; note that it is bimodal:
+            a network either has a regional triage layer or it does not.</p>
+          <div id="scatter"></div>
+          <div class="legend">
+            <span><svg width="11" height="11"><circle cx="5.5" cy="5.5" r="4" fill="var(--neutral)"
+              opacity=".5"/></svg>one of the 32</span>
+            <span><svg width="11" height="11"><circle cx="5.5" cy="5.5" r="5" fill="var(--neutral)"
+              stroke="var(--ink)" stroke-width="1.5"/></svg>Network A, B, C as briefed</span>
+            <span><svg width="11" height="11"><circle cx="5.5" cy="5.5" r="5"
+              fill="var(--s2)"/></svg>your configuration</span>
+          </div>
+          <div class="note" id="scatterNote"></div>
+        </div>
+        <div class="card">
+          <h2>Your configuration against the five named networks</h2>
+          <p class="cs">The brief's four criteria, plus the two that decide whether the network is
+            deliverable at all.</p>
+          <div class="tw"><table id="cmpTable"></table></div>
+          <div class="note" id="cmpNote"></div>
+        </div>
+        <div class="card">
+          <h2>The gate &mdash; Collection and Recovery are one decision, not two</h2>
+          <p class="cs">Remanufacturing without regional triage loses a third of its yield before
+            the line starts, because cores arrive aged and multiply handled. Adding the two levers'
+            separate values overstates the case badly.</p>
+          <div id="gate"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ RETURNS ============ -->
+  <section id="p-returns" role="tabpanel" hidden>
+    <div class="grid g2" style="grid-template-columns:1.25fr 1fr">
+      <div class="card">
+        <h2>The disposition cascade</h2>
+        <p class="cs">Of every 100 units shipped, 20 come back &mdash; the brief's own return rate.
+          Each is graded against five questions in order. Recycling is the <i>residual</i>, not the
+          default, and that inversion of sequence is the whole mechanism.</p>
+        <div id="cascade"></div>
+        <div class="note" id="cascadeNote"></div>
+      </div>
+      <div class="card">
+        <h2>What each rung is worth</h2>
+        <p class="cs">Value retained and manufacturing footprint avoided, both expressed against one
+          new product = 1.00. Processing intensity is on the same relative scale.</p>
+        <div class="tw"><table id="rungTable"></table></div>
+        <div class="note">A resold unit displaces almost an entire new build; a recycled one
+          displaces very little of it. That spread &mdash; not the cost of the reverse network
+          &mdash; is what makes the Recovery decision worth taking seriously.</div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>The same 20 units under each network</h2>
+      <p class="cs">Network A asks no questions at all: a unit with a scuffed carton and a unit with
+        a dead board go on the same truck and are shredded together.</p>
+      <div id="dispCompare"></div>
+    </div>
+  </section>
+
+  <!-- ============ COST & CARBON ============ -->
+  <section id="p-cost" role="tabpanel" hidden>
+    <div class="grid g2">
+      <div class="card">
+        <h2>Cost by block &mdash; Network A against your configuration</h2>
+        <p class="cs">Every block as a share of Network A's total network cost. The mix itself is
+          set to match the prevalent structure of a distribution network: transport around 55%,
+          facilities around 25%, handling and processing around 12%, packaging around 8%.</p>
+        <div id="costBlocks"></div>
+      </div>
+      <div class="card">
+        <h2>Carbon by block</h2>
+        <p class="cs">Operating carbon only. Avoided manufacturing carbon &mdash; the footprint of
+          the new units that never had to be built &mdash; is reported separately below.</p>
+        <div id="co2Blocks"></div>
+      </div>
+    </div>
+    <div class="grid g2">
+      <div class="card">
+        <h2>The net ledger</h2>
+        <p class="cs">Cost, recovered value and service loss on one currency: the value unit, where
+          1.00 is the worth of one new product. Network A's whole network cost is anchored at 10
+          value units &mdash; the prevalent norm that supply-chain cost runs at about a tenth of
+          sales.</p>
+        <div id="ledger"></div>
+      </div>
+      <div class="card">
+        <h2>What each lever is worth</h2>
+        <p class="cs">Net-cost index points saved. Measured three ways: the lever alone, the lever
+          inside the full network, and the lever engineered. Watch Transport.</p>
+        <div id="levValue"></div>
+        <div class="note" id="levNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ METHOD ============ -->
+  <section id="p-method" role="tabpanel" hidden>
+    <div class="grid g2">
+      <div class="card">
+        <h2>What the brief gives, and what it does not</h2>
+        <p class="cs">Every structural fact in this model, and the three methodological choices
+          that follow from what the brief leaves out.</p>
+        <div class="tw"><table id="pdfTable"></table></div>
+      </div>
+      <div class="card">
+        <h2>Method, limits, and what would change the answer</h2>
+        <div class="kf" id="method"></div>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Every parameter, with its provenance</h2>
+      <p class="cs">
+        <span class="prov pdf">PDF</span> stated in or counted from the brief &nbsp;
+        <span class="prov ind">IND</span> a prevalent industry ratio &mdash; never a price &nbsp;
+        <span class="prov str">STR</span> a structural consequence of the brief's node counts</p>
+      <div class="tw"><table id="paramTable"></table></div>
+    </div>
+    <div class="card">
+      <h2>All 32 configurations, ranked by net cost to serve</h2>
+      <p class="cs">C = Collection, T = Transport, R = Recovery, W = Warehouse, P = Packaging.
+        Click any row to load it into the designer.</p>
+      <div class="tw"><table id="sweepTable"></table></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <div><b>VistaraTech Network Designer</b> &mdash; companion application to the 16-slide submission
+    &ldquo;Designing the Sustainable Supply Chain Network&rdquo;. Raghavendar R &middot; MBA
+    Operations Management 2025-27 &middot; Symbiosis Institute of Operations Management.</div>
+  <div style="margin-top:6px">VistaraTech is a fictional company defined in the course case brief.
+    This is a <b>closed-world model</b>: every structural fact comes from the brief, and every
+    parameter is a ratio drawn from prevalent industry practice. It contains no prices, no company
+    financials and no external emissions dataset, so all cost and carbon results are indices with
+    Network A = 100 rather than currency or tonnes. The benchmark evidence cited in the deck is used
+    only to characterise what other companies have built, never to parameterise this model.</div>
+  <div style="margin-top:6px">A single self-contained HTML file &mdash; no dependencies, no build
+    step, no server.</div>
+</footer>
+<div class="tip" id="tip"></div>
+
+<script>
+/* Closed-world VistaraTech model — JS port of closed_world_model.py.
+   Structure from the assignment brief; every ratio a prevalent industry norm. */
+const PDFF = { suppliers: 3, plants: 2, regional_dcs: 4, customers: 10000,
+  return_rate: 0.20, centralized_recycling: 1, regional_collection: 2, remanufacturing: 1 };
+const BASIS = 100, RET = BASIS * PDFF.return_rate;
+const LANES = { inbound: PDFF.suppliers * PDFF.plants,
+  primary: PDFF.plants * PDFF.regional_dcs, secondary: PDFF.regional_dcs };
+
+const IND = {
+  trunk_vs_regional_distance: 4.0,
+  rail_cost_vs_road: 0.55, rail_co2_vs_road: 0.25,
+  rail_terminal_cost: 0.12, rail_drayage_co2: 0.06, rail_min_haul_band: 2.0,
+  reverse_density_untriaged: 2.20, reverse_density_triaged: 1.15,
+  solar_energy_remaining: 0.30, solar_capex_per_node: 0.15,
+  returnable_trips_to_breakeven: 25.0, single_use_cost: 1.30,
+  returnable_cost_closed_loop: 0.59, returnable_cost_open_loop: 1.11,
+  returnable_co2_closed_loop: 0.25, loop_closure_share: 0.60,
+  returnable_damage_reduction: 0.15,
+  node_cost_dc: 62.0, node_cost_collection: 31.0, node_cost_recycling: 74.0,
+  node_cost_reman: 93.0, node_energy: 18.0,
+  touch_cost: 4.00, triage_touch_cost: 2.80,
+  proc_resale: 3.0, proc_refurb: 15.0, proc_reman: 42.0, proc_harvest: 7.5, proc_recycle: 3.0,
+  val_resale: 0.75, val_refurb: 0.55, val_reman: 0.80, val_harvest: 0.18, val_recycle: 0.06,
+  co2_avoided_resale: 0.98, co2_avoided_refurb: 0.90, co2_avoided_reman: 0.80,
+  co2_avoided_harvest: 0.25, co2_avoided_recycle: 0.15,
+  reman_yield_without_triage: 0.63, refurb_yield_without_triage: 0.55,
+  otif_road: 100.0, otif_rail_all: 96.0, otif_rail_selective: 99.5,
+  lost_sale_conversion: 0.40, network_cost_share_of_sales: 0.10,
+  electrified_lastmile_co2_factor: 0.55,
+};
+const RUNGS = ["Resale", "Refurbish", "Remanufacture", "Harvest", "Recycle"];
+const RKEY = { Resale: "resale", Refurbish: "refurb", Remanufacture: "reman",
+  Harvest: "harvest", Recycle: "recycle" };
+const CASCADE_FULL = { Resale: 0.22, Refurbish: 0.21, Remanufacture: 0.23,
+  Harvest: 0.16, Recycle: 0.18 };
+const LEVERS = ["collection", "transport", "recovery", "warehouse", "packaging"];
+const OPT_A = { collection: "Centralized", transport: "Road", recovery: "Recycle",
+  warehouse: "Conventional", packaging: "Single-use" };
+const OPT_B = { collection: "Regional", transport: "Rail + Road", recovery: "Remanufacture",
+  warehouse: "Solar", packaging: "Returnable" };
+
+/* Python's round() breaks a .5 tie to even; JS Math.round breaks it upward.
+   The service score lands on an exact tie, so match Python to keep the deck,
+   the appendix and this page reporting one number. */
+function bankersRound1(v) {
+  const x = v * 10, f = Math.floor(x), d = x - f;
+  let n;
+  if (Math.abs(d - 0.5) < 1e-9) n = (f % 2 === 0) ? f : f + 1;
+  else n = Math.round(x);
+  return n / 10;
+}
+
+function disposition(regional, reman) {
+  let d;
+  if (!regional && !reman) {
+    d = { Resale: 0.10, Refurbish: 0, Remanufacture: 0, Harvest: 0, Recycle: 0.90 };
+  } else {
+    const ry = regional ? 1.0 : IND.reman_yield_without_triage;
+    const fy = regional ? 1.0 : IND.refurb_yield_without_triage;
+    d = {};
+    d.Resale = CASCADE_FULL.Resale * (regional ? 1.0 : 0.45);
+    d.Refurbish = CASCADE_FULL.Refurbish * fy;
+    d.Remanufacture = reman ? CASCADE_FULL.Remanufacture * ry : 0;
+    d.Harvest = CASCADE_FULL.Harvest * (reman ? ry : 0.30);
+    d.Recycle = Math.max(0, 1 - RUNGS.filter(k => k !== "Recycle")
+      .reduce((s, k) => s + d[k], 0));
+  }
+  const o = {}; RUNGS.forEach(k => o[k] = d[k] * RET); return o;
+}
+
+function evaluate(cfg, asym) {
+  asym = !!asym;
+  const regional = cfg.collection === "B", rail = cfg.transport === "B",
+        reman = cfg.recovery === "B", solar = cfg.warehouse === "B",
+        returnable = cfg.packaging === "B";
+  const TR = IND.trunk_vs_regional_distance;
+  const damageSaved = returnable ? RET * IND.returnable_damage_reduction : 0;
+  const ret = RET - damageSaved;
+
+  const railShare = rail ? (asym ? 0.25 : 0.70) : 0;
+  const trRoadC = 1.0, trRailC = IND.rail_cost_vs_road + IND.rail_terminal_cost;
+  const trRoadE = 1.0, trRailE = IND.rail_co2_vs_road + IND.rail_drayage_co2;
+  const trunk = v => [v * TR * ((1 - railShare) * trRoadC + railShare * trRailC),
+                      v * TR * ((1 - railShare) * trRoadE + railShare * trRailE)];
+  const [cIn, eIn] = trunk(BASIS), [cPri, ePri] = trunk(BASIS);
+  const dens = returnable ? 0.94 : 1.00;
+  const ev = (asym && solar) ? IND.electrified_lastmile_co2_factor : 1.0;
+  const cSec = BASIS * dens, eSec = BASIS * dens * ev;
+
+  const rdfShort = IND.reverse_density_untriaged;
+  const rdfLong = regional ? IND.reverse_density_triaged : IND.reverse_density_untriaged;
+  const dcC = (asym && returnable) ? 0.40 : 1.0;
+  const dcE = (asym && returnable) ? 0.25 : 1.0;
+  let cCol, eCol, shareCentral;
+  if (regional) {
+    cCol = ret * 1.0 * rdfShort * dcC; eCol = ret * 1.0 * rdfShort * dcE;
+    shareCentral = asym ? 0.52 : 1.0;
+  } else {
+    cCol = ret * TR * rdfShort * dcC; eCol = ret * TR * rdfShort * dcE;
+    shareCentral = 0;
+  }
+  let cRev = 0, eRev = 0;
+  if (regional) {
+    const moved = ret * shareCentral;
+    cRev = moved * TR * (rail ? trRailC : trRoadC) * rdfLong;
+    eRev = moved * TR * (rail ? trRailE : trRoadE) * rdfLong;
+  }
+  const cHand = regional
+    ? ret * IND.triage_touch_cost + ret * shareCentral * IND.touch_cost
+    : ret * IND.touch_cost * 2;
+
+  const disp0 = disposition(regional, reman);
+  const scale = ret / RET;
+  const disp = {}; RUNGS.forEach(k => disp[k] = disp0[k] * scale);
+  const cProc = RUNGS.reduce((s, k) => s + disp[k] * IND["proc_" + RKEY[k]], 0);
+  let value = RUNGS.reduce((s, k) => s + disp[k] * IND["val_" + RKEY[k]], 0);
+  let eAvoid = RUNGS.reduce((s, k) => s + disp[k] * IND["co2_avoided_" + RKEY[k]], 0);
+  eAvoid += damageSaved * 1.0; value += damageSaved * 1.0;
+
+  let nodes = PDFF.regional_dcs * IND.node_cost_dc;
+  nodes += regional ? PDFF.regional_collection * IND.node_cost_collection : IND.node_cost_collection;
+  nodes += PDFF.centralized_recycling * IND.node_cost_recycling;
+  if (reman) nodes += PDFF.remanufacturing * IND.node_cost_reman;
+  const nodeCount = PDFF.regional_dcs + (regional ? PDFF.regional_collection : 1)
+    + PDFF.centralized_recycling + (reman ? PDFF.remanufacturing : 0);
+  const cEnergy = solar
+    ? nodeCount * IND.node_energy * (IND.solar_energy_remaining + IND.solar_capex_per_node)
+    : nodeCount * IND.node_energy;
+  const eEnergy = solar ? nodeCount * IND.node_energy * IND.solar_energy_remaining
+                        : nodeCount * IND.node_energy;
+
+  let cPack, ePack;
+  if (returnable) {
+    const lc = IND.loop_closure_share;
+    cPack = BASIS * (lc * IND.returnable_cost_closed_loop + (1 - lc) * IND.returnable_cost_open_loop)
+            + ret * IND.returnable_cost_closed_loop;
+    ePack = BASIS * (lc * IND.returnable_co2_closed_loop + (1 - lc) * 0.55)
+            + ret * IND.returnable_co2_closed_loop;
+  } else {
+    cPack = (BASIS + ret) * IND.single_use_cost;
+    ePack = (BASIS + ret) * 1.00;
+  }
+
+  const otif = rail ? (asym ? IND.otif_rail_selective : IND.otif_rail_all) : IND.otif_road;
+  const cycle = regional ? (46.0 - (asym ? 19.0 : 0)) : 100.0;
+  const swap = reman ? (regional ? 90.0 : 60.0) : 0.0;
+  let service = 0.40 * (otif - 90) / 10 * 100 + 0.35 * (100 - cycle) + 0.25 * swap;
+  service = bankersRound1(Math.max(0, Math.min(100, service)));
+  const serviceLoss = (IND.otif_road - otif) / 100 * BASIS * IND.lost_sale_conversion;
+
+  const costRaw = cIn + cPri + cSec + cCol + cRev + cHand + cProc + nodes + cEnergy + cPack;
+  const co2Raw = eIn + ePri + eSec + eCol + eRev + eEnergy + ePack;
+  const productive = RUNGS.filter(k => k !== "Recycle").reduce((s, k) => s + disp[k], 0);
+  const config = {}; LEVERS.forEach(l => config[l] = (cfg[l] === "B" ? OPT_B : OPT_A)[l]);
+
+  return {
+    config, code: LEVERS.map(l => cfg[l]).join(""), asym, cfg: Object.assign({}, cfg),
+    cost_blocks: { "Inbound trunk": cIn, "Primary trunk": cPri, "Last mile": cSec,
+      "Reverse collection": cCol, "Reverse trunk": cRev, "Handling & triage": cHand,
+      "Recovery processing": cProc, "Facilities": nodes, "Node energy": cEnergy,
+      "Packaging": cPack },
+    co2_blocks: { "Inbound trunk": eIn, "Primary trunk": ePri, "Last mile": eSec,
+      "Reverse collection": eCol, "Reverse trunk": eRev, "Node energy": eEnergy,
+      "Packaging": ePack },
+    cost_raw: costRaw, co2_raw: co2Raw, value_raw: value, co2_avoided_raw: eAvoid,
+    service_loss_vu: serviceLoss, disposition: disp,
+    recovery_pct: ret ? productive / ret * 100 : 0,
+    value_retained_pct: value / RET * 100,
+    service, otif, cycle, return_units: ret, node_count: nodeCount,
+  };
+}
+
+const cfgof = o => Object.assign({ collection: "A", transport: "A", recovery: "A",
+  warehouse: "A", packaging: "A" }, o || {});
+const NAMED = {
+  "Network A": { cfg: cfgof(), asym: false, tag: "Low cost BUT high emissions" },
+  "Network B": { cfg: cfgof({ transport: "B", warehouse: "B", packaging: "B" }), asym: false,
+    tag: "Higher initial investment BUT lower operating emissions" },
+  "Network C": { cfg: cfgof({ collection: "B", recovery: "B", packaging: "B" }), asym: false,
+    tag: "Higher reverse-logistics complexity BUT higher material recovery" },
+  "All-B literal": { cfg: cfgof({ collection: "B", transport: "B", recovery: "B",
+    warehouse: "B", packaging: "B" }), asym: false, tag: "Every Option B, taken literally" },
+  "Network B+": { cfg: cfgof({ collection: "B", transport: "B", recovery: "B",
+    warehouse: "B", packaging: "B" }), asym: true,
+    tag: "Every Option B, engineered with six asymmetries" },
+};
+const RAW = {}; Object.keys(NAMED).forEach(n => RAW[n] = evaluate(NAMED[n].cfg, NAMED[n].asym));
+const BASE_COST = RAW["Network A"].cost_raw, BASE_CO2 = RAW["Network A"].co2_raw,
+      BASE_VAL = RAW["Network A"].value_raw, BASE_AVOID = RAW["Network A"].co2_avoided_raw;
+const NETWORK_COST_VU = BASIS * IND.network_cost_share_of_sales;
+
+function indexify(r) {
+  r = Object.assign({}, r);
+  r.cost_index = r.cost_raw / BASE_COST * 100;
+  r.cost_vu = r.cost_raw / BASE_COST * NETWORK_COST_VU;
+  r.value_vu = r.value_raw;
+  r.net_vu = r.cost_vu - r.value_vu + r.service_loss_vu;
+  r.co2_index = r.co2_raw / BASE_CO2 * 100;
+  r.value_index = r.value_raw / BASE_VAL * 100;
+  r.co2_avoided_index = r.co2_avoided_raw / BASE_AVOID * 100;
+  r.net_co2_index = (r.co2_raw - r.co2_avoided_raw) / BASE_CO2 * 100;
+  r.cost_blocks_idx = {}; Object.keys(r.cost_blocks).forEach(k =>
+    r.cost_blocks_idx[k] = r.cost_blocks[k] / BASE_COST * 100);
+  r.cost_blocks_vu = {}; Object.keys(r.cost_blocks).forEach(k =>
+    r.cost_blocks_vu[k] = r.cost_blocks[k] / BASE_COST * NETWORK_COST_VU);
+  r.co2_blocks_idx = {}; Object.keys(r.co2_blocks).forEach(k =>
+    r.co2_blocks_idx[k] = r.co2_blocks[k] / BASE_CO2 * 100);
+  return r;
+}
+const _T = {}; Object.keys(RAW).forEach(n => _T[n] = indexify(RAW[n]));
+const BASE_NET_VU = _T["Network A"].net_vu;
+const addNet = r => { r.net_cost_index = r.net_vu / BASE_NET_VU * 100; return r; };
+const RESULTS = {}; Object.keys(_T).forEach(n => {
+  RESULTS[n] = addNet(_T[n]); RESULTS[n].tag = NAMED[n].tag; });
+const ev = (cfg, a) => addNet(indexify(evaluate(cfg, a)));
+
+const SWEEP = [];
+["A", "B"].forEach(a => ["A", "B"].forEach(b => ["A", "B"].forEach(c =>
+  ["A", "B"].forEach(d => ["A", "B"].forEach(e => {
+    const cfg = { collection: a, transport: b, recovery: c, warehouse: d, packaging: e };
+    const r = ev(cfg, false);
+    SWEEP.push({ code: r.code, cfg, config: r.config, cost: r.cost_index,
+      net_cost: r.net_cost_index, co2: r.co2_index, net_co2: r.net_co2_index,
+      recovery: r.recovery_pct, service: r.service, value: r.value_index });
+  })))));
+
+const GATE = { collection_only: ev(cfgof({ collection: "B" })),
+  recovery_only: ev(cfgof({ recovery: "B" })),
+  both: ev(cfgof({ collection: "B", recovery: "B" })) };
+
+const COND = {};
+LEVERS.forEach(lv => {
+  const off = cfgof(), on = cfgof(); on[lv] = "B";
+  const allOff = {}, allOn = {};
+  LEVERS.forEach(l => { allOff[l] = "B"; allOn[l] = "B"; }); allOff[lv] = "A";
+  COND[lv] = {
+    solo_cost: ev(off).net_cost_index - ev(on).net_cost_index,
+    solo_co2: ev(off).net_co2_index - ev(on).net_co2_index,
+    full_cost: ev(allOff).net_cost_index - ev(allOn).net_cost_index,
+    full_co2: ev(allOff).net_co2_index - ev(allOn).net_co2_index,
+    eng_cost: ev(allOff, true).net_cost_index - ev(allOn, true).net_cost_index,
+    eng_co2: ev(allOff, true).net_co2_index - ev(allOn, true).net_co2_index,
+  };
+});
+
+const SCORE_SET = ["Network A", "Network B", "Network C", "All-B literal", "Network B+"];
+const WEIGHTS = { Cost: 0.35, Recovery: 0.30, CO2: 0.20, Service: 0.15 };
+function scorecard(w, extra) {
+  w = w || WEIGHTS;
+  const set = extra ? SCORE_SET.concat([extra.key]) : SCORE_SET;
+  const get = n => extra && n === extra.key ? extra.r : RESULTS[n];
+  const dims = {
+    Cost: {}, CO2: {}, Recovery: {}, Service: {},
+  };
+  set.forEach(n => { const r = get(n);
+    dims.Cost[n] = -r.net_cost_index; dims.CO2[n] = -r.co2_index;
+    dims.Recovery[n] = r.recovery_pct; dims.Service[n] = r.service; });
+  const norm = {}, total = {};
+  Object.keys(dims).forEach(d => {
+    const vals = Object.values(dims[d]), lo = Math.min(...vals), hi = Math.max(...vals);
+    norm[d] = {}; set.forEach(n =>
+      norm[d][n] = hi === lo ? 0 : (dims[d][n] - lo) / (hi - lo) * 100);
+  });
+  set.forEach(n => total[n] = Object.keys(w).reduce((s, d) => s + norm[d][n] * w[d], 0));
+  return { norm, total, set };
+}
+const SC = scorecard();
+const WEIGHT_TESTS = {
+  "Base — 35/30/20/15": { Cost: .35, Recovery: .30, CO2: .20, Service: .15 },
+  "Cost-led — 60/20/10/10": { Cost: .60, Recovery: .20, CO2: .10, Service: .10 },
+  "Carbon-led — 15/20/55/10": { Cost: .15, Recovery: .20, CO2: .55, Service: .10 },
+  "Service-led — 20/25/15/40": { Cost: .20, Recovery: .25, CO2: .15, Service: .40 },
+};
+const WEIGHT_RESULTS = {};
+Object.keys(WEIGHT_TESTS).forEach(k => {
+  const t = scorecard(WEIGHT_TESTS[k]).total;
+  const o = Object.entries(t).sort((a, b) => b[1] - a[1]);
+  WEIGHT_RESULTS[k] = { winner: o[0][0], score: o[0][1], runner: o[1][0], runner_score: o[1][1] };
+});
+
+const MODEL = { PDFF, BASIS, RET, LANES, IND, RUNGS, RKEY, CASCADE_FULL, LEVERS, OPT_A, OPT_B,
+  evaluate, cfgof, ev, NAMED, RESULTS, SWEEP, GATE, COND, SC, scorecard, WEIGHTS,
+  WEIGHT_TESTS, WEIGHT_RESULTS, SCORE_SET, NETWORK_COST_VU, BASE_NET_VU, disposition };
+
+</script>
+<script>
+(function () {
+"use strict";
+const M = MODEL;
+const $ = s => document.querySelector(s);
+const el = (t, a, h) => { const n = document.createElement(t);
+  if (a) for (const k in a) k === "class" ? n.className = a[k] : n.setAttribute(k, a[k]);
+  if (h !== undefined) n.innerHTML = h; return n; };
+const f1 = n => { const r = Math.round(n * 10) / 10; return (Object.is(r, -0) ? 0 : r).toFixed(1); };
+const f0 = n => { const r = Math.round(n); return String(Object.is(r, -0) ? 0 : r); };
+const f2 = n => (Math.round(n * 100) / 100).toFixed(2);
+const sgn = n => (n > 0 ? "+" : n < 0 ? "−" : "") + f1(Math.abs(n));
+const down = n => (n > 0 ? "−" : n < 0 ? "+" : "") + f1(Math.abs(n));
+const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const S = {
+  cfg: { collection: "B", transport: "B", recovery: "B", warehouse: "B", packaging: "B" },
+  asym: { triage: true, rail: true, cascade: true, pack: true, ev: true, dropcollect: true },
+  tab: "designer",
+};
+const ASYM = [
+  { k: "triage", lev: "collection", t: "Regional triage, central processing",
+    d: "Grade within reach of the customer; do the capital-intensive work at one campus. About half the units never travel a trunk lane." },
+  { k: "rail", lev: "transport", t: "Rail the returns, road the revenue",
+    d: "The whole reverse spine on rail; only planned replenishment on the forward trunk, not the express volume." },
+  { k: "cascade", lev: "recovery", t: "A five-rung cascade, decided per unit",
+    d: "Not recycle-or-remanufacture but resale → refurbish → remanufacture → harvest → recycle, with recycle as the residual." },
+  { k: "pack", lev: "packaging", t: "Returnable only where the loop closes",
+    d: "Returnable where the delivery vehicle comes back; right-sized single-use where it does not." },
+  { k: "ev", lev: "warehouse", t: "The solar node also charges the fleet",
+    d: "Behind-the-meter generation charges an electric delivery fleet, so the same rooftop decarbonises the vans too." },
+  { k: "dropcollect", lev: "packaging", t: "Drop-and-collect — not in the brief",
+    d: "The vehicle that delivers collects that customer's return on the same stop. It needs no asset, only a routing rule." },
+];
+const anyAsym = () => ASYM.some(a => S.asym[a.k] && S.cfg[a.lev] === "B");
+const current = () => M.ev(S.cfg, anyAsym());
+function matchNamed() {
+  const a = anyAsym();
+  for (const n in M.NAMED) { const d = M.NAMED[n];
+    if (d.asym === a && M.LEVERS.every(l => d.cfg[l] === S.cfg[l])) return n; }
+  return null;
+}
+
+/* ---------- svg ---------- */
+const SVG = (w, h, inner) =>
+  `<svg viewBox="0 0 ${w} ${h}" width="100%" preserveAspectRatio="xMidYMid meet" role="img">${inner}</svg>`;
+const T = (x, y, s, c, a, extra) =>
+  `<text x="${x}" y="${y}" class="${c || "tk"}" text-anchor="${a || "start"}" ${extra || ""}>${s}</text>`;
+const L = (x1, y1, x2, y2, c) =>
+  `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="${c || "gl"}"/>`;
+function hbar(x, y, w, h, fill, tip) {
+  const r = Math.min(4, h / 2, Math.abs(w));
+  return `<path d="M${x} ${y} L${x + w - r} ${y} Q${x + w} ${y} ${x + w} ${y + r}
+    L${x + w} ${y + h - r} Q${x + w} ${y + h} ${x + w - r} ${y + h} L${x} ${y + h} Z"
+    fill="${fill}" class="hit" ${tip ? `data-tip="${esc(tip)}"` : ""}/>`;
+}
+function nice(m) { if (m <= 0) return 1;
+  const e = Math.pow(10, Math.floor(Math.log10(m))), n = m / e;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * e; }
+
+const tip = $("#tip");
+document.addEventListener("mouseover", e => { const t = e.target.closest("[data-tip]");
+  if (!t) return; tip.innerHTML = t.getAttribute("data-tip"); tip.classList.add("on"); });
+document.addEventListener("mousemove", e => {
+  if (!tip.classList.contains("on")) return;
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX + 14, y = e.clientY + 14;
+  if (x + r.width > innerWidth - 8) x = e.clientX - r.width - 14;
+  if (y + r.height > innerHeight - 8) y = e.clientY - r.height - 14;
+  tip.style.left = Math.max(8, x) + "px"; tip.style.top = Math.max(8, y) + "px";
+});
+document.addEventListener("mouseout", e => {
+  if (e.target.closest("[data-tip]")) tip.classList.remove("on"); });
+
+/* ---------- tabs ---------- */
+const TABS = [["designer", "Network designer"], ["returns", "Returns &amp; recovery"],
+              ["cost", "Cost &amp; carbon"], ["method", "Method &amp; all 32"]];
+function buildNav() {
+  const n = $("#nav");
+  TABS.forEach(([k, l]) => { const b = el("button", { role: "tab", "data-tab": k }, l);
+    b.onclick = () => { S.tab = k; syncTabs(); render(); }; n.appendChild(b); });
+}
+function syncTabs() { TABS.forEach(([k]) => {
+  $(`[data-tab="${k}"]`).setAttribute("aria-selected", S.tab === k);
+  $(`#p-${k}`).hidden = S.tab !== k; }); }
+
+/* ---------- designer ---------- */
+function renderPresets() {
+  const box = $("#presets"); box.innerHTML = ""; const named = matchNamed();
+  Object.keys(M.NAMED).forEach(n => {
+    const b = el("button", { type: "button",
+      "data-tip": `<b>${esc(n)}</b>${esc(M.NAMED[n].tag)}` }, n);
+    if (named === n) b.classList.add("on");
+    b.onclick = () => { const d = M.NAMED[n];
+      M.LEVERS.forEach(l => S.cfg[l] = d.cfg[l]);
+      ASYM.forEach(a => S.asym[a.k] = d.asym); render(); };
+    box.appendChild(b);
+  });
+}
+function renderLevers() {
+  const box = $("#levers"); box.innerHTML = "";
+  M.LEVERS.forEach(lv => {
+    const c = M.COND[lv];
+    const d = el("div", { class: "lev" });
+    d.innerHTML = `<div class="ln"><span>${lv}</span>
+      <span class="worth">${sgn(c.full_cost)} at the margin</span></div>`;
+    const seg = el("div", { class: "seg" });
+    [["A", M.OPT_A[lv]], ["B", M.OPT_B[lv]]].forEach(([v, label]) => {
+      const b = el("button", { type: "button", "aria-pressed": S.cfg[lv] === v },
+        `<em>Option ${v}</em>${label}`);
+      if (v === "B") b.classList.add("b");
+      b.onclick = () => { S.cfg[lv] = v; render(); };
+      seg.appendChild(b);
+    });
+    d.appendChild(seg); box.appendChild(d);
+  });
+}
+function renderAsyms() {
+  const box = $("#asyms"); box.innerHTML = "";
+  ASYM.forEach((a, i) => {
+    const ok = S.cfg[a.lev] === "B";
+    const lab = el("label", { class: "asym" + (ok ? "" : " off") });
+    lab.innerHTML = `<input type="checkbox" ${S.asym[a.k] ? "checked" : ""} ${ok ? "" : "disabled"}>
+      <span><span class="at">${i + 1}. ${a.t}</span><span class="ad">${a.d}${
+      ok ? "" : ` <b>Needs ${a.lev} on Option B.</b>`}</span></span>`;
+    lab.querySelector("input").onchange = e => { S.asym[a.k] = e.target.checked; render(); };
+    box.appendChild(lab);
+  });
+  const r = current(), lit = M.ev(S.cfg, false);
+  $("#asymNote").innerHTML = anyAsym()
+    ? `Against the same five choices <b>taken literally</b>, the asymmetries are worth
+       <b>${f1(lit.net_cost_index - r.net_cost_index)} net-cost index points</b>,
+       <b>${sgn(r.service - lit.service)} service points</b> and
+       <b>${f0(lit.cycle - r.cycle)} points</b> off the reverse cycle time, at
+       <b>${sgn(r.co2_index - lit.co2_index)}</b> index points of operating carbon &mdash; given
+       back deliberately, and priced in the lever table on the Cost &amp; carbon tab.`
+    : `No asymmetries active &mdash; this is the configuration <b>taken literally</b>. Switch some
+       on to see what engineering the same five choices is worth.`;
+}
+function renderKpis() {
+  const r = current(), b = M.RESULTS["Network A"];
+  const box = $("#kpis"); box.innerHTML = "";
+  [
+    { lab: "Cost — net cost to serve", val: f0(r.net_cost_index),
+      sub: r.net_cost_index < 0 ? "the network returns more than it costs" : "index, Network A = 100",
+      d: b.net_cost_index - r.net_cost_index, unit: " points below A", show: sgn, good: v => v > 0 },
+    { lab: "CO₂ — operating", val: f0(r.co2_index),
+      sub: "index, Network A = 100",
+      d: b.co2_index - r.co2_index, unit: " against A", show: down, good: v => v > 0 },
+    { lab: "Recovery — value recovered", val: f0(r.recovery_pct) + "%",
+      sub: f1(r.return_units - r.disposition.Recycle) + " of "
+           + f1(r.return_units) + " returned units kept in use",
+      d: r.recovery_pct - b.recovery_pct, unit: " pts above A", show: sgn, good: v => v > 0 },
+    { lab: "Service — composite", val: f1(r.service),
+      sub: `cycle ${f0(r.cycle)} · OTIF ${f1(r.otif)}%`,
+      d: r.service - b.service, unit: " pts above A", show: sgn, good: v => v > 0 },
+  ].forEach(t => {
+    const cls = Math.abs(t.d) < 0.05 ? "nu" : t.good(t.d) ? "up" : "dn";
+    box.appendChild(el("div", { class: "tile" },
+      `<div class="lab">${t.lab}</div><div class="val">${t.val}</div>
+       <div class="sub">${t.sub}</div>
+       <div class="cmp"><span class="pill ${cls}">${t.show(t.d)}</span>${t.unit}</div>`));
+  });
+}
+function renderScatter() {
+  const W = 620, H = 340, m = { l: 54, r: 18, t: 16, b: 50 };
+  const cur = current();
+  const xs = M.SWEEP.map(d => d.net_cost).concat([cur.net_cost_index]);
+  const ys = M.SWEEP.map(d => d.co2).concat([cur.co2_index]);
+  const x0 = Math.min(...xs) - 10, x1 = Math.max(...xs) + 10;
+  const y0 = Math.min(40, Math.min(...ys) - 6), y1 = Math.max(...ys) + 8;
+  const px = v => m.l + (v - x0) / (x1 - x0) * (W - m.l - m.r);
+  const py = v => H - m.b - (v - y0) / (y1 - y0) * (H - m.t - m.b);
+  let g = "";
+  const st = nice((y1 - y0) / 4);
+  for (let v = Math.ceil(y0 / st) * st; v <= y1; v += st)
+    g += L(m.l, py(v), W - m.r, py(v)) + T(m.l - 8, py(v) + 3.5, f0(v), "tk", "end");
+  for (let i = 0; i <= 5; i++) { const v = x0 + (x1 - x0) * i / 5;
+    g += T(px(v), H - m.b + 16, f0(v), "tk", "middle"); }
+  g += L(m.l, H - m.b, W - m.r, H - m.b, "ax");
+  const named = {}; Object.keys(M.NAMED).forEach(n => { const d = M.NAMED[n];
+    if (!d.asym) named[M.LEVERS.map(l => d.cfg[l]).join("")] = n; });
+  const SHORT = { "Network A": "A", "Network B": "B", "Network C": "C", "All-B literal": "All-B" };
+  M.SWEEP.forEach(d => { if (named[d.code]) return;
+    const r = 3 + (d.recovery / 100) * 5;
+    g += `<circle cx="${px(d.net_cost)}" cy="${py(d.co2)}" r="${r}" fill="var(--neutral)"
+      opacity=".45" class="hit" data-tip="<b>${d.code.split("").join(" ")}</b>net cost ${f1(d.net_cost)} · CO₂ ${f0(d.co2)} · recovery ${f0(d.recovery)}%"/>`;
+  });
+  const placed = [];
+  M.SWEEP.forEach(d => { const n = named[d.code]; if (!n) return;
+    const r = 4 + (d.recovery / 100) * 5;
+    g += `<circle cx="${px(d.net_cost)}" cy="${py(d.co2)}" r="${r}" fill="var(--neutral)"
+      stroke="var(--ink)" stroke-width="1.6" class="hit"
+      data-tip="<b>${esc(n)}</b>net cost ${f1(d.net_cost)} · CO₂ ${f0(d.co2)} · recovery ${f0(d.recovery)}%"/>`;
+    g += T(px(d.net_cost), py(d.co2) - r - 7, SHORT[n], "lbb", "middle");
+    placed.push([px(d.net_cost), py(d.co2) - r - 7]);
+  });
+  const cx = px(cur.net_cost_index), cy = py(cur.co2_index);
+  let off = 24;
+  if (placed.some(([a, b]) => Math.abs(a - cx) < 54 && Math.abs(b - (cy + off)) < 15)) off = 38;
+  g += `<circle cx="${cx}" cy="${cy}" r="13" fill="var(--s2)" opacity=".18"/>`;
+  g += `<circle cx="${cx}" cy="${cy}" r="6.5" fill="var(--s2)" stroke="var(--surface)" stroke-width="2"/>`;
+  g += L(cx, cy + 13, cx, cy + off - 9, "ax");
+  g += T(cx, cy + off, "you are here", "lbb", "middle", 'fill="var(--s2)"');
+  g += T(m.l, H - 8, "← better · net cost to serve index", "lb");
+  g += T(-(H - m.b + m.t) / 2, 13, "← better · operating CO₂ index", "lb",
+         "middle", 'transform="rotate(-90)"');
+  $("#scatter").innerHTML = SVG(W, H, g);
+  const better = M.SWEEP.filter(d => d.net_cost < cur.net_cost_index).length;
+  const best = M.SWEEP.reduce((a, b) => b.net_cost < a.net_cost ? b : a);
+  $("#scatterNote").innerHTML = anyAsym()
+    ? `Your configuration sits <b>off the 32-point lattice</b>, because the asymmetries cannot be
+       expressed as a choice between Option A and Option B. The best configuration taken literally
+       is <b>${best.code.split("").join(" ")}</b> at ${f1(best.net_cost)}; you are at
+       <b>${f1(cur.net_cost_index)}</b>.`
+    : `<b>${better}</b> of the 32 beat this one on net cost. Two findings hold across the whole
+       lattice: every one of the six best configurations starts with <b>B on Collection</b>, and
+       all four of the worst keep <b>Recovery on Recycle</b>.`;
+}
+function renderCmp() {
+  const cur = current(), named = matchNamed();
+  let h = `<thead><tr><th>Network</th><th class="n">Net cost</th><th class="n">Cost</th>
+    <th class="n">CO₂</th><th class="n">Value</th><th class="n">Recovery</th>
+    <th class="n">Service</th><th class="n">Cycle</th><th class="n">OTIF</th></tr></thead><tbody>`;
+  M.SCORE_SET.forEach(n => { const r = M.RESULTS[n];
+    h += `<tr${named === n ? ' class="hl"' : ""}><td>${n}</td>
+      <td class="n">${f1(r.net_cost_index)}</td><td class="n">${f1(r.cost_index)}</td>
+      <td class="n">${f1(r.co2_index)}</td><td class="n">${f0(r.value_index)}</td>
+      <td class="n">${f0(r.recovery_pct)}%</td><td class="n">${f1(r.service)}</td>
+      <td class="n">${f0(r.cycle)}</td><td class="n">${f1(r.otif)}%</td></tr>`; });
+  if (!named) h += `<tr class="hl"><td>Your configuration</td>
+      <td class="n">${f1(cur.net_cost_index)}</td><td class="n">${f1(cur.cost_index)}</td>
+      <td class="n">${f1(cur.co2_index)}</td><td class="n">${f0(cur.value_index)}</td>
+      <td class="n">${f0(cur.recovery_pct)}%</td><td class="n">${f1(cur.service)}</td>
+      <td class="n">${f0(cur.cycle)}</td><td class="n">${f1(cur.otif)}%</td></tr>`;
+  $("#cmpTable").innerHTML = h + "</tbody>";
+  const sc = named ? M.scorecard().total[named]
+    : M.scorecard(M.WEIGHTS, { key: "Your configuration", r: cur }).total["Your configuration"];
+  $("#cmpNote").innerHTML = `Weighted on the brief's four criteria at Cost 35%, Recovery 30%,
+    CO₂ 20%, Service 15%, this configuration scores <b>${f1(sc)} of 100</b>.
+    Net cost to serve is network operating cost less the value recovered from returned units, plus
+    the throughput value lost to service failure &mdash; a negative index means the network returns
+    more than it consumes.`;
+}
+function renderGate() {
+  const g = M.GATE, base = M.RESULTS["Network A"];
+  const rows = [
+    ["Regional collection only", g.collection_only.recovery_pct, "var(--s1)",
+     "Triage rescues resale and refurbish, but warranty-grade cores still go to the shredder."],
+    ["Remanufacturing only", g.recovery_only.recovery_pct, "var(--s1)",
+     "The line exists, but cores arrive aged and multiply handled, so yield falls short."],
+    ["Both together", g.both.recovery_pct, "var(--s2)",
+     "Triage delivers graded cores to a line built to receive them."],
+    ["What simple addition predicts",
+     g.collection_only.recovery_pct + g.recovery_only.recovery_pct, null,
+     "Impossible — which is exactly the point. The two levers claim much of the same pool."],
+  ];
+  const W = 620, H = 262, m = { l: 178, r: 56, t: 8, b: 26 };
+  const max = 100, rh = (H - m.t - m.b) / rows.length;
+  let s = "";
+  for (let v = 0; v <= max; v += 25) { const x = m.l + v / max * (W - m.l - m.r);
+    s += L(x, m.t, x, H - m.b) + T(x, H - m.b + 15, v + "%", "tk", "middle"); }
+  rows.forEach((r, i) => {
+    const y = m.t + i * rh + 3, h = 19;
+    const w = r[1] / max * (W - m.l - m.r);
+    const tt = `<b>${esc(r[0])}</b>${f1(r[1])}% of returned units kept in productive use`;
+    s += r[2] === null
+      ? `<rect x="${m.l}" y="${y}" width="${w}" height="${h}" rx="4" fill="none"
+          stroke="var(--muted)" stroke-width="1.3" stroke-dasharray="4 3" class="hit"
+          data-tip="${esc(tt)} — impossible; shown to make the overlap visible"/>`
+      : hbar(m.l, y, w, h, r[2], tt);
+    s += T(m.l - 10, y + 13.5, r[0], r[2] === null ? "lb" : "lbb", "end");
+    s += T(m.l + w + 8, y + 13.5, f1(r[1]) + "%", r[2] === null ? "lb" : "lbb");
+    s += T(m.l, y + h + 13, r[3].length > 88 ? r[3].slice(0, 87) + "…" : r[3], "lb", "start",
+           'style="font-size:9.5px" fill="var(--muted)"');
+  });
+  s += L(m.l, H - m.b, W - m.r, H - m.b, "ax");
+  $("#gate").innerHTML = SVG(W, H, s) +
+    `<div class="note">Regional collection alone reaches <b>${f1(rows[0][1])}%</b>.
+     Remanufacturing alone reaches <b>${f1(rows[1][1])}%</b>. Together they reach
+     <b>${f1(rows[2][1])}%</b> &mdash; not the ${f1(rows[3][1])}% that adding them would predict.
+     On money the same overlap appears: the two levers are worth
+     ${f1(base.net_cost_index - g.collection_only.net_cost_index)} and
+     ${f1(base.net_cost_index - g.recovery_only.net_cost_index)} index points separately, but only
+     <b>${f1(base.net_cost_index - g.both.net_cost_index)}</b> together.</div>`;
+}
+
+/* ---------- returns ---------- */
+const QS = ["Is it functional and saleable as it stands?", "Is it one known, contained fix?",
+  "Is the core sound enough to rebuild to as-new?",
+  "Are the sub-assemblies worth more than the whole?",
+  "Residual — what is left when all four answers are no"];
+function renderCascade() {
+  const r = current();
+  const W = 600, H = 300, m = { l: 20, t: 14 };
+  const cols = ["var(--q1)", "var(--q2)", "var(--q3)", "var(--q4)", "var(--q5)"];
+  const maxU = Math.max(...M.RUNGS.map(k => r.disposition[k]), 1);
+  let s = "";
+  M.RUNGS.forEach((k, i) => {
+    const y = m.t + i * 56, u = r.disposition[k];
+    s += `<rect x="${m.l}" y="${y}" width="30" height="30" rx="6" fill="${cols[i]}"/>`;
+    s += T(m.l + 15, y + 20, String(i + 1), "lbb", "middle",
+           `fill="${i >= 3 ? "var(--surface)" : "var(--ink)"}"`);
+    s += T(m.l + 42, y + 13, k, "lbb");
+    s += T(m.l + 42, y + 27, QS[i], "lb", "start", 'style="font-size:9.5px" fill="var(--muted)"');
+    const bw = (u / maxU) * 168;
+    s += hbar(370, y + 5, Math.max(3, bw), 20, cols[i],
+      `<b>${esc(k)}</b>${f1(u)} of ${f1(r.return_units)} returned units<br>
+       value retained ${f2(M.IND["val_" + M.RKEY[k]])} per unit · avoids
+       ${f2(M.IND["co2_avoided_" + M.RKEY[k]])} of a new build`);
+    s += T(374 + Math.max(3, bw) + 6, y + 19, f1(u), "lbb");
+    if (i < 4) s += `<path d="M${m.l + 15} ${y + 34} L${m.l + 15} ${y + 50}" stroke="var(--axis)"
+      stroke-width="1.4" marker-end=""/><path d="M${m.l + 11} ${y + 46} L${m.l + 15} ${y + 52}
+      L${m.l + 19} ${y + 46}" fill="none" stroke="var(--axis)" stroke-width="1.4"/>`;
+  });
+  s += T(370, H - 4, "units, of the " + f1(r.return_units) + " returned per 100 shipped", "lb",
+         "start", 'style="font-size:9.5px" fill="var(--muted)"');
+  $("#cascade").innerHTML = SVG(W, H, s);
+  const a = M.RESULTS["Network A"];
+  $("#cascadeNote").innerHTML = `Value recovery <b>${f0(r.recovery_pct)}%</b> against
+    ${f0(a.recovery_pct)}% on Network A. Units diverted from the shredder:
+    <b>${f1(a.disposition.Recycle - r.disposition.Recycle)}</b> of every 20 returned.
+    ${anyAsym() || S.cfg.collection === "B" || S.cfg.recovery === "B"
+      ? "" : "This configuration has neither a triage layer nor a remanufacturing line, so no question is ever asked."}`;
+}
+function renderRungTable() {
+  const r = current(), cols = ["var(--q1)", "var(--q2)", "var(--q3)", "var(--q4)", "var(--q5)"];
+  let h = `<thead><tr><th>Rung</th><th class="n">Units now</th><th class="n">Value retained</th>
+    <th class="n">CO₂ avoided</th><th class="n">Processing</th></tr></thead><tbody>`;
+  M.RUNGS.forEach((k, i) => { const kk = M.RKEY[k];
+    h += `<tr><td><span class="dot" style="background:${cols[i]}"></span>${k}</td>
+      <td class="n">${f1(r.disposition[k])}</td>
+      <td class="n">${f2(M.IND["val_" + kk])}</td>
+      <td class="n">${f2(M.IND["co2_avoided_" + kk])}</td>
+      <td class="n">${f1(M.IND["proc_" + kk])}</td></tr>`; });
+  h += `<tr class="tot"><td>Total for this configuration</td>
+    <td class="n">${f1(r.return_units)}</td><td class="n">${f2(r.value_vu)}</td>
+    <td class="n">${f1(r.co2_avoided_raw)}</td><td class="n">—</td></tr>`;
+  $("#rungTable").innerHTML = h + "</tbody>";
+}
+function renderDispCompare() {
+  const nets = ["Network A", "Network B", "Network C", "Network B+"];
+  const cols = ["var(--q1)", "var(--q2)", "var(--q3)", "var(--q4)", "var(--q5)"];
+  const W = 760, H = 210, m = { l: 108, r: 30, t: 22 };
+  const rh = (H - m.t - 26) / nets.length;
+  let s = "";
+  M.RUNGS.forEach((k, i) => {
+    s += `<rect x="${m.l + i * 105}" y="2" width="9" height="9" rx="2" fill="${cols[i]}"/>`;
+    s += T(m.l + i * 105 + 13, 10, k, "lb", "start", 'style="font-size:9.5px"');
+  });
+  nets.forEach((n, ri) => {
+    const r = M.RESULTS[n], y = m.t + ri * rh;
+    s += T(m.l - 10, y + 17, n, "lbb", "end");
+    let x = m.l;
+    M.RUNGS.forEach((k, i) => {
+      const w = (r.disposition[k] / M.RET) * (W - m.l - m.r);
+      if (w > 0.4) {
+        s += `<rect x="${x}" y="${y + 4}" width="${Math.max(0, w - 2)}" height="24" rx="3"
+          fill="${cols[i]}" class="hit" data-tip="<b>${esc(n)} · ${esc(k)}</b>${f1(r.disposition[k])} of 20 units"/>`;
+        if (w > 32) s += T(x + w / 2 - 1, y + 20, f1(r.disposition[k]), "lbb", "middle",
+          `style="font-size:10px" fill="${i >= 3 ? "var(--surface)" : "var(--ink)"}"`);
+      }
+      x += w;
+    });
+    s += T(W - m.r + 6, y + 20, f0(r.recovery_pct) + "%", "lbb", "start");
+  });
+  s += T(W - m.r + 6, m.t - 6, "recovery", "lb", "start", 'style="font-size:9px"');
+  $("#dispCompare").innerHTML = SVG(W, H, s);
+}
+
+/* ---------- cost & carbon ---------- */
+function blockChart(target, blocks, base, unitLabel, fmt) {
+  const keys = Object.keys(base).filter(k => base[k] > 0.001 || blocks[k] > 0.001);
+  const W = 560, H = 40 + keys.length * 30, m = { l: 138, r: 74, t: 14 };
+  const max = Math.max(...keys.map(k => Math.max(base[k], blocks[k]))) * 1.06;
+  let s = "";
+  keys.forEach((k, i) => {
+    const y = m.t + i * 30;
+    s += T(m.l - 10, y + 15, k, "lb", "end");
+    const bw = base[k] / max * (W - m.l - m.r), cw = blocks[k] / max * (W - m.l - m.r);
+    s += hbar(m.l, y + 2, Math.max(1.5, bw), 9, "var(--neutral)",
+      `<b>Network A · ${esc(k)}</b>${fmt(base[k])} ${unitLabel}`);
+    s += hbar(m.l, y + 14, Math.max(1.5, cw), 9, "var(--s1)",
+      `<b>Your configuration · ${esc(k)}</b>${fmt(blocks[k])} ${unitLabel}`);
+    const d = blocks[k] - base[k];
+    s += T(W - m.r + 6, y + 16, (Math.abs(d) < 0.005 ? "—" : sgn(d)), "lb", "start",
+      `style="font-size:10px;font-family:var(--mono)" fill="${
+        Math.abs(d) < 0.005 ? "var(--muted)" : d < 0 ? "var(--good)" : "var(--warn)"}"`);
+  });
+  const tb = Object.values(base).reduce((a, b) => a + b, 0);
+  const tc = keys.reduce((a, k) => a + blocks[k], 0);
+  s += L(m.l, H - 22, W - m.r, H - 22, "ax");
+  s += T(m.l - 10, H - 8, "Total", "lbb", "end");
+  s += T(m.l, H - 8, `${fmt(tb)} → ${fmt(tc)} ${unitLabel}`, "lbb");
+  target.innerHTML = SVG(W, H, s) +
+    `<div class="legend"><span><span class="dot" style="background:var(--neutral)"></span>Network A</span>
+     <span><span class="dot" style="background:var(--s1)"></span>your configuration</span></div>`;
+}
+function renderCost() {
+  const r = current(), a = M.RESULTS["Network A"];
+  blockChart($("#costBlocks"), r.cost_blocks_idx, a.cost_blocks_idx, "index pts", f1);
+  blockChart($("#co2Blocks"), r.co2_blocks_idx, a.co2_blocks_idx, "index pts", f1);
+
+  const rows = [
+    ["Network operating cost", r.cost_vu, "+", "what the network consumes"],
+    ["Value recovered from returns", -r.value_vu, "−", "what it puts back"],
+    ["Throughput lost to service failure", r.service_loss_vu, "+", "units that never sell at all"],
+  ];
+  const W = 540, H = 176, m = { l: 210, r: 64, t: 16 };
+  /* Scale both halves off one plot width so a long negative bar can never run back
+     under the row labels, whatever configuration is loaded. */
+  const all = [...rows.map(x => x[1]), r.net_vu];
+  const maxNeg = Math.max(0.001, ...all.filter(v => v < 0).map(Math.abs));
+  const maxPos = Math.max(0.001, ...all.filter(v => v > 0));
+  const plot = W - m.l - m.r;
+  const sc = plot / ((maxNeg + maxPos) * 1.15);
+  const zero = m.l + maxNeg * sc * 1.08;
+  let s = "";
+  s += `<line x1="${zero}" y1="${m.t - 4}" x2="${zero}" y2="${H - 44}" class="ax"/>`;
+  rows.forEach((x, i) => {
+    const y = m.t + i * 34;
+    s += T(m.l - 12, y + 15, x[0], "lb", "end");
+    const w = Math.abs(x[1]) * sc, neg = x[1] < 0;
+    s += hbar(neg ? zero - w : zero, y + 3, Math.max(2, w), 19,
+      neg ? "var(--s1)" : "var(--neutral)",
+      `<b>${esc(x[0])}</b>${f2(Math.abs(x[1]))} value units — ${esc(x[3])}`);
+    const inside = neg && (zero - w - 40 < m.l);
+    s += T(inside ? zero - w + 7 : (neg ? zero - w - 6 : zero + w + 6), y + 17,
+      f2(Math.abs(x[1])), "lbb", inside ? "start" : (neg ? "end" : "start"),
+      'style="font-family:var(--mono);font-size:10.5px"'
+      + (inside ? ' fill="var(--surface)"' : ''));
+  });
+  s += L(m.l, H - 40, W - m.r, H - 40, "ax");
+  const nw = Math.abs(r.net_vu) * sc, nneg = r.net_vu < 0;
+  s += T(m.l - 12, H - 16, "Net cost to serve", "lbb", "end");
+  s += hbar(nneg ? zero - nw : zero, H - 30, Math.max(2, nw), 19,
+    nneg ? "var(--s2)" : "var(--warn)",
+    `<b>Net cost to serve</b>${f2(r.net_vu)} value units`);
+  const nIn = nneg && (zero - nw - 40 < m.l);
+  s += T(nIn ? zero - nw + 7 : (nneg ? zero - nw - 6 : zero + nw + 6), H - 16, f2(r.net_vu),
+    "lbb", nIn ? "start" : (nneg ? "end" : "start"),
+    'style="font-family:var(--mono);font-size:11px"' + (nIn ? ' fill="var(--surface)"' : ''));
+  $("#ledger").innerHTML = SVG(W, H, s) +
+    `<div class="note">One value unit is the worth of one new product. Network A's whole network
+     cost is anchored at <b>10.00</b> value units and its net cost to serve is
+     <b>${f2(M.BASE_NET_VU)}</b>; the index on every other screen is this figure divided by that
+     one. A negative net means the network returns more than it consumes.</div>`;
+
+  const LW = 540, LH = 40 + M.LEVERS.length * 34, lm = { l: 108, r: 60, t: 22 };
+  const vals = M.LEVERS.flatMap(l => [M.COND[l].solo_cost, M.COND[l].full_cost, M.COND[l].eng_cost]);
+  const lo = Math.min(0, ...vals) * 1.15, hi = Math.max(...vals) * 1.12;
+  const lx = v => lm.l + (v - lo) / (hi - lo) * (LW - lm.l - lm.r);
+  let ls = "";
+  ls += `<line x1="${lx(0)}" y1="${lm.t - 8}" x2="${lx(0)}" y2="${LH - 26}" class="ax"/>`;
+  ls += T(lx(0), lm.t - 12, "0", "tk", "middle");
+  [["solo_cost", "var(--neutral)", "alone"], ["full_cost", "var(--s1)", "inside the network"],
+   ["eng_cost", "var(--s2)", "engineered"]].forEach(() => {});
+  M.LEVERS.forEach((l, i) => {
+    const y = lm.t + i * 34, c = M.COND[l];
+    ls += T(lm.l - 10, y + 16, l.charAt(0).toUpperCase() + l.slice(1), "lb", "end");
+    [["solo_cost", "var(--neutral)", 0], ["full_cost", "var(--s1)", 8],
+     ["eng_cost", "var(--s2)", 16]].forEach(([k, col, dy]) => {
+      const v = c[k], w = Math.abs(lx(v) - lx(0));
+      ls += hbar(v < 0 ? lx(v) : lx(0), y + dy + 1, Math.max(1.5, w), 6, col,
+        `<b>${esc(l)} · ${k === "solo_cost" ? "alone" : k === "full_cost"
+          ? "inside the full network" : "engineered"}</b>${sgn(v)} net-cost index points`);
+    });
+    ls += T(LW - lm.r + 6, y + 18, sgn(c.eng_cost), "lbb", "start",
+      `style="font-family:var(--mono);font-size:10px" fill="${
+        c.eng_cost < 0 ? "var(--warn)" : "var(--ink)"}"`);
+  });
+  $("#levValue").innerHTML = SVG(LW, LH, ls) +
+    `<div class="legend"><span><span class="dot" style="background:var(--neutral)"></span>alone</span>
+     <span><span class="dot" style="background:var(--s1)"></span>inside the full network</span>
+     <span><span class="dot" style="background:var(--s2)"></span>engineered</span></div>`;
+  $("#levNote").innerHTML = `<b>Transport is the finding.</b> Taken literally it is a
+    <b>negative</b> lever &mdash; blanket rail destroys more throughput through lost service than
+    it saves in freight (${sgn(M.COND.transport.full_cost)} points). Engineered onto the reverse
+    spine only, the same Option B turns positive at
+    <b>${sgn(M.COND.transport.eng_cost)}</b>. Same decision, same brief; the difference is
+    entirely in how it is implemented.`;
+}
+
+/* ---------- method ---------- */
+function renderMethod() {
+  const P = M.PDFF;
+  let h = `<thead><tr><th>Fact</th><th class="n">Value</th><th>How the model uses it</th></tr></thead><tbody>`;
+  [["Suppliers", P.suppliers, "Inbound lane count: 3 × 2 = " + M.LANES.inbound],
+   ["Manufacturing plants", P.plants, "Inbound and primary lane counts"],
+   ["Regional DCs", P.regional_dcs, "Primary lanes (2 × 4 = " + M.LANES.primary
+     + "), four delivery territories, and the warehouse node count"],
+   ["Customers", P.customers.toLocaleString(), "Establishes the last mile as a dispersed territory"],
+   ["Expected product returns", (P.return_rate * 100) + "%",
+     "THE central number — " + f0(M.RET) + " units return for every " + M.BASIS + " shipped"],
+   ["Centralized recycling centre", P.centralized_recycling, "The Recycle option's asset"],
+   ["Regional collection centres", P.regional_collection, "The Regional collection option's assets"],
+   ["Remanufacturing facility", P.remanufacturing, "The Remanufacture option's asset"],
+  ].forEach(r => h += `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td>${r[2]}</td></tr>`);
+  h += `<tr class="tot"><td>Not given: any price, distance, volume or emission factor</td>
+    <td class="n">—</td><td>Hence indices, two distance bands, and a per-100-unit basis</td></tr>`;
+  $("#pdfTable").innerHTML = h + "</tbody>";
+
+  $("#method").innerHTML = `
+    <p><b>What it is.</b> A deterministic, single-period cost, carbon, recovery and service model of
+      the network the brief describes, evaluated identically across all 32 configurations plus one
+      engineered configuration. Because every configuration runs on one engine, the
+      <i>ranking</i> is far more robust than any individual index value.</p>
+    <p><b>What it is not.</b> Not a simulation &mdash; flows are period means, not distributions.
+      Not an optimisation &mdash; it evaluates the 32 the brief's decision table defines. And not a
+      financial model: it contains no currency, and no NPV or payback is claimed, because the brief
+      supplies nothing from which either could honestly be built.</p>
+    <p><b>The assumption that carries the most weight</b> is the remanufacturing yield penalty
+      applied where recovery is adopted without regional triage
+      (${f2(M.IND.reman_yield_without_triage)}). It produces the gate finding, and it is what a
+      challenger should attack first.</p>
+    <p><b>What would change the answer.</b> The recommendation moves away from Network B+ only if
+      that penalty is near 1.00 &mdash; if cores genuinely arrive in the same condition after a full
+      trunk haul and two extra handling touches as after regional triage. Building the two
+      collection centres first is what tests exactly that, at the smallest scale.</p>
+    <p><b>Where it is deliberately conservative.</b> Remanufacturing carries the highest processing
+      intensity of any rung. Service failure is costed as lost throughput rather than merely
+      delayed. No value is claimed for released working capital, for channel effects, or for any
+      regulatory benefit &mdash; all of which would improve the case.</p>`;
+
+  const P_ = (t, c) => `<span class="prov ${c}">${t}</span>`;
+  const params = [
+    ["Basis of measurement", M.BASIS + " units shipped", "str",
+     "Makes every result independent of a throughput figure the brief does not give"],
+    ["Units returned", f0(M.RET), "pdf", "The brief's 20% return rate, made literal"],
+    ["Trunk : regional distance band", M.IND.trunk_vs_regional_distance + " : 1", "ind",
+     "The standard planning separation between inter-city haul and intra-region delivery"],
+    ["Rail cost vs road, per tonne-km", f2(M.IND.rail_cost_vs_road), "ind",
+     "Rail is prevalently costed at roughly half of road on long haul"],
+    ["Rail CO₂ vs road, per tonne-km", f2(M.IND.rail_co2_vs_road), "ind",
+     "Rail at about a quarter of road — the ratio behind ‘rail the returns’"],
+    ["Rail terminal handling", f2(M.IND.rail_terminal_cost), "ind",
+     "Lift-on / lift-off, drayage and documentation at both ends"],
+    ["Reverse density, un-triaged", f2(M.IND.reverse_density_untriaged) + "×", "ind",
+     "Mixed-condition returns cube out before they weigh out — the case for regional collection"],
+    ["Reverse density, after triage", f2(M.IND.reverse_density_triaged) + "×", "ind",
+     "Once graded, de-packaged and compacted"],
+    ["Warehouse energy left after solar", f2(M.IND.solar_energy_remaining), "ind",
+     "Rooftop plus the efficiency measures that accompany it"],
+    ["Solar annualised capital charge", f2(M.IND.solar_capex_per_node), "ind",
+     "The installation has to be paid for"],
+    ["Returnable packaging, closed loop",
+     f2(M.IND.returnable_cost_closed_loop / M.IND.single_use_cost) + " of single-use", "ind",
+     "Prevalent breakeven is around " + M.IND.returnable_trips_to_breakeven + " trips"],
+    ["Returnable packaging, open loop",
+     f2(M.IND.returnable_cost_open_loop / M.IND.single_use_cost) + " of single-use", "ind",
+     "Where the loop does not close, the asset must be recovered separately"],
+    ["Loop closure share", (M.IND.loop_closure_share * 100) + "%", "ind",
+     "The share of last-mile movements where the vehicle comes back"],
+    ["Transit damage removed by returnable packaging",
+     (M.IND.returnable_damage_reduction * 100) + "%", "ind",
+     "Units that never become returns at all"],
+    ["Remanufacturing yield without triage", f2(M.IND.reman_yield_without_triage), "ind",
+     "Remanufacturing yield is condition-gated — THE GATE FINDING"],
+    ["Refurbishment yield without triage", f2(M.IND.refurb_yield_without_triage), "ind",
+     "Same mechanism"],
+    ["Lost-sale conversion", (M.IND.lost_sale_conversion * 100) + "%", "ind",
+     "Roughly four in ten service failures convert to a permanently lost sale"],
+    ["Network cost as a share of sales", (M.IND.network_cost_share_of_sales * 100) + "%", "ind",
+     "The anchor that puts cost and recovered value in one currency"],
+    ["Electrified last-mile carbon factor", f2(M.IND.electrified_lastmile_co2_factor), "ind",
+     "Asymmetry 5"],
+    ["One regional DC, per year", f1(M.IND.node_cost_dc), "ind",
+     "In the same unit as one unit-lane of regional road movement"],
+    ["One regional collection centre", f1(M.IND.node_cost_collection), "ind",
+     "Grading rather than storage"],
+    ["The centralized recycling centre", f1(M.IND.node_cost_recycling), "ind", "Processing equipment"],
+    ["The remanufacturing facility", f1(M.IND.node_cost_reman), "ind",
+     "The heaviest single node — test, rework and reassembly"],
+    ["One full handling touch", f2(M.IND.touch_cost), "ind", "Per unit received and put away"],
+    ["One triage touch", f2(M.IND.triage_touch_cost), "ind", "Grading is lighter than full receipt"],
+  ];
+  let ph = `<thead><tr><th>Parameter</th><th class="n">Value</th><th>Provenance</th>
+    <th>What it reflects</th></tr></thead><tbody>`;
+  params.forEach(p => ph += `<tr><td>${p[0]}</td><td class="n">${p[1]}</td>
+    <td>${P_(p[2].toUpperCase(), p[2])}</td><td>${p[3]}</td></tr>`);
+  $("#paramTable").innerHTML = ph + "</tbody>";
+
+  const named = {}; Object.keys(M.NAMED).forEach(n => { const d = M.NAMED[n];
+    if (!d.asym) named[M.LEVERS.map(l => d.cfg[l]).join("")] = n; });
+  const cur = M.LEVERS.map(l => S.cfg[l]).join("");
+  const sorted = M.SWEEP.slice().sort((a, b) => a.net_cost - b.net_cost);
+  let sh = `<thead><tr><th class="n">#</th><th>C</th><th>T</th><th>R</th><th>W</th><th>P</th>
+    <th>Named</th><th class="n">Net cost</th><th class="n">Cost</th><th class="n">CO₂</th>
+    <th class="n">Recovery</th><th class="n">Service</th></tr></thead><tbody>`;
+  sorted.forEach((d, i) => {
+    const cells = d.code.split("").map(c =>
+      `<td><span class="chip ${c === "B" ? "b" : "a"}">${c}</span></td>`).join("");
+    sh += `<tr data-code="${d.code}" class="hit${d.code === cur && !anyAsym() ? " hl" : ""}"
+      style="cursor:pointer"><td class="n">${i + 1}</td>${cells}
+      <td>${named[d.code] ? "<b>" + named[d.code] + "</b>" : ""}</td>
+      <td class="n">${f1(d.net_cost)}</td><td class="n">${f1(d.cost)}</td>
+      <td class="n">${f1(d.co2)}</td><td class="n">${f0(d.recovery)}%</td>
+      <td class="n">${f1(d.service)}</td></tr>`;
+  });
+  const bp = M.RESULTS["Network B+"];
+  sh += `<tr class="tot"><td class="n">—</td>${"BBBBB".split("").map(c =>
+    `<td><span class="chip b">${c}</span></td>`).join("")}
+    <td><b>Network B+ engineered</b></td><td class="n">${f1(bp.net_cost_index)}</td>
+    <td class="n">${f1(bp.cost_index)}</td><td class="n">${f1(bp.co2_index)}</td>
+    <td class="n">${f0(bp.recovery_pct)}%</td><td class="n">${f1(bp.service)}</td></tr>`;
+  const t = $("#sweepTable"); t.innerHTML = sh + "</tbody>";
+  t.querySelectorAll("tr[data-code]").forEach(tr => tr.onclick = () => {
+    const code = tr.getAttribute("data-code");
+    M.LEVERS.forEach((l, i) => S.cfg[l] = code[i]);
+    ASYM.forEach(a => S.asym[a.k] = false);
+    S.tab = "designer"; syncTabs(); render();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
+function render() {
+  renderPresets(); renderLevers(); renderAsyms(); renderKpis();
+  if (S.tab === "designer") { renderScatter(); renderCmp(); renderGate(); }
+  if (S.tab === "returns") { renderCascade(); renderRungTable(); renderDispCompare(); }
+  if (S.tab === "cost") renderCost();
+  if (S.tab === "method") renderMethod();
+}
+(function theme() {
+  let t = null; try { t = localStorage.getItem("vt-theme"); } catch (e) {}
+  if (t) document.documentElement.setAttribute("data-theme", t);
+  $("#themeBtn").onclick = () => {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    const next = dark ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    try { localStorage.setItem("vt-theme", next); } catch (e) {}
+    render();
+  };
+})();
+buildNav(); syncTabs(); render();
+addEventListener("resize", () => { clearTimeout(window.__rt);
+  window.__rt = setTimeout(render, 180); });
+})();
+
+</script>
+</body>
+</html>
